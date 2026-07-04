@@ -1,0 +1,9 @@
+{
+  "name": "mushmire",
+  "version": "1.0.0",
+  "description": "Mushmire — a 2D sandbox action-adventure RPG for iPhone Safari. To: my baby Richard.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8000"
+  }
+}

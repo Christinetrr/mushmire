@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1226">
+<title>Mushmire</title>
+<link rel="stylesheet" href="css/style.css">
+<script>
+window.addEventListener('error', function (e) {
+  var host = document.body || document.documentElement;
+  var d = document.getElementById('errbox');
+  if (!d) {
+    d = document.createElement('div');
+    d.id = 'errbox';
+    d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#5a1220;color:#fff;font:11px monospace;padding:4px 8px;z-index:999;white-space:pre-wrap';
+    host.appendChild(d);
+  }
+  d.textContent = e.message + ' @ ' + (e.filename || '').split('/').pop() + ':' + e.lineno;
+});
+</script>
+</head>
+<body>
+
+<!-- ═════════ LOADING / TITLE SCREEN ═════════ -->
+<div id="screen-title" class="screen visible">
+  <canvas id="title-fx"></canvas>
+  <div class="title-inner">
+    <div class="title-crest">🍄</div>
+    <h1 class="title-logo">MUSHMIRE</h1>
+    <div class="title-sub">— the Mush Empire awaits —</div>
+    <div class="title-buttons">
+      <button id="btn-continue" class="btn btn-sand hidden">Continue Journey</button>
+      <button id="btn-new" class="btn btn-sand">New Journey</button>
+      <button id="btn-manual" class="btn btn-ghost">How to Play</button>
+    </div>
+    <div class="dedication">To: my baby Richard ♥</div>
+  </div>
+</div>
+
+<!-- ═════════ INSTRUCTION MANUAL ═════════ -->
+<div id="screen-manual" class="screen">
+  <div class="panel manual-panel">
+    <h2>✦ Traveler's Manual ✦</h2>
+    <div class="manual-scroll">
+      <h3>Moving Around</h3>
+      <p>◀ ▶ — walk &nbsp;·&nbsp; <b>double-tap</b> ◀ or ▶ and hold — sprint</p>
+      <p>⬆ — jump &nbsp;·&nbsp; tap ⬆ again mid-air — <b>double jump</b></p>
+      <p>⬇ — duck &nbsp;·&nbsp; <b>double-tap</b> ⬇ — roll (dodges enemy hits!)</p>
+      <h3>Touching the World</h3>
+      <p>Tap a nearby block with a <b>pickaxe</b> selected to mine it — pickaxes fell trees, bamboo and coral too. Hold your finger to keep digging.</p>
+      <p>Tap an empty spot with a <b>block</b> selected to build.</p>
+      <p>⚔ button swings whatever you're holding at enemies.</p>
+      <p>Tap a <b>cat</b> to pet it. This is important.</p>
+      <h3>Surviving the Night</h3>
+      <p>When the sun sets, each biome breathes out its own spirits — dune shades in the desert, stalkers in the jungle, tide wisps at sea, hungry ghosts by the temples. Craft <b>torches</b>, build walls, or fight back.</p>
+      <h3>Making Things</h3>
+      <p>Open your <b>pack</b> 🎒 to see resources. Open <b>craft</b> ⚒ to turn wood, stone, sand and stranger things into tools, weapons, blocks and creature charms.</p>
+      <p>The <b>Weapon Forge</b> ✎ lets you draw your own weapon pixel-by-pixel — or import a picture — then forge it into the game for real.</p>
+      <h3>The Four Realms</h3>
+      <p>🏜 <b>Sunken Dunes</b> — cactus, sandstone, buried gold.</p>
+      <p>🌴 <b>Verdant Tropics</b> — your gentle starting home.</p>
+      <p>🌊 <b>Glass Ocean</b> — hold your breath, mind the depths, harvest coral.</p>
+      <p>🏮 <b>Lantern Coast</b> — warm winds, bamboo, golden temples, and cats. So many cats.</p>
+      <h3>Saving</h3>
+      <p>Mushmire saves itself as you play. Close the tab, come back — your empire remains.</p>
+    </div>
+    <button id="btn-manual-close" class="btn btn-sand">Back</button>
+  </div>
+</div>
+
+<!-- ═════════ CHARACTER SELECT ═════════ -->
+<div id="screen-character" class="screen">
+  <div class="panel char-panel">
+    <h2>✦ Who wanders into Mushmire? ✦</h2>
+    <div class="char-row">
+      <div class="char-card selected" data-char="mei">
+        <canvas class="char-preview" width="96" height="128"></canvas>
+        <div class="char-name">Mei</div>
+      </div>
+      <div class="char-card" data-char="khai">
+        <canvas class="char-preview" width="96" height="128"></canvas>
+        <div class="char-name">Khai</div>
+      </div>
+    </div>
+    <div class="char-custom">
+      <label>Hair <input type="color" id="cc-hair" value="#1c1216"></label>
+      <label>Skin <input type="color" id="cc-skin" value="#e8b98a"></label>
+      <label>Top <input type="color" id="cc-top" value="#7a4fa3"></label>
+      <label>Legs <input type="color" id="cc-legs" value="#3d3550"></label>
+    </div>
+    <input type="text" id="cc-name" maxlength="14" placeholder="name (optional)">
+    <button id="btn-begin" class="btn btn-sand">Begin the Journey</button>
+  </div>
+</div>
+
+<!-- ═════════ GAME ═════════ -->
+<div id="screen-game" class="screen">
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div id="hud-hearts"></div>
+    <div id="hud-clock"><span id="clock-icon">☀</span><span id="clock-text"></span></div>
+    <div id="hud-biome"></div>
+  </div>
+
+  <div id="hotbar"></div>
+
+  <div id="hud-buttons">
+    <button class="hud-btn" id="btn-pack">🎒</button>
+    <button class="hud-btn" id="btn-craft">⚒</button>
+    <button class="hud-btn" id="btn-forge">✎</button>
+  </div>
+
+  <!-- Touch controls -->
+  <div id="controls-left" class="ctl-cluster">
+    <button class="ctl" id="ctl-left">◀</button>
+    <button class="ctl" id="ctl-right">▶</button>
+  </div>
+  <div id="controls-right" class="ctl-cluster">
+    <button class="ctl ctl-small" id="ctl-down">⬇</button>
+    <button class="ctl" id="ctl-attack">⚔</button>
+    <button class="ctl" id="ctl-jump">⬆</button>
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- Inventory -->
+  <div id="modal-inventory" class="modal">
+    <div class="panel">
+      <h2>🎒 Pack</h2>
+      <div id="inv-grid" class="slot-grid"></div>
+      <div class="modal-hint">Tap an item to move it to your hotbar hand.</div>
+      <button class="btn btn-ghost modal-close">Close</button>
+    </div>
+  </div>
+
+  <!-- Crafting -->
+  <div id="modal-craft" class="modal">
+    <div class="panel">
+      <h2>⚒ Craft</h2>
+      <div id="craft-list"></div>
+      <button class="btn btn-ghost modal-close">Close</button>
+    </div>
+  </div>
+
+  <!-- Weapon forge -->
+  <div id="modal-forge" class="modal">
+    <div class="panel forge-panel">
+      <h2>✎ Weapon Forge</h2>
+      <div class="forge-row">
+        <canvas id="forge-canvas" width="256" height="256"></canvas>
+        <div class="forge-side">
+          <div id="forge-palette"></div>
+          <button class="btn btn-tiny" id="forge-eraser">Eraser</button>
+          <button class="btn btn-tiny" id="forge-clear">Clear</button>
+          <label class="btn btn-tiny" id="forge-import-label">Import Image
+            <input type="file" id="forge-import" accept="image/*" hidden>
+          </label>
+        </div>
+      </div>
+      <input type="text" id="forge-name" maxlength="18" placeholder="weapon name">
+      <div id="forge-cost" class="modal-hint"></div>
+      <div class="forge-actions">
+        <button class="btn btn-sand" id="forge-make">Forge It</button>
+        <button class="btn btn-ghost modal-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Death -->
+  <div id="modal-death" class="modal">
+    <div class="panel death-panel">
+      <h2>the spores carry you home…</h2>
+      <button class="btn btn-sand" id="btn-respawn">Rise Again</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rotate prompt -->
+<div id="rotate-hint"><div>⟳<br>Turn your phone sideways,<br>the empire is wide.</div></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
