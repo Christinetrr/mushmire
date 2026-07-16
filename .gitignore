@@ -1,2 +1,11 @@
 .DS_Store
 .claude/
+# Unity
+unity/Library/
+unity/Temp/
+unity/Obj/
+unity/Logs/
+unity/UserSettings/
+unity/Builds/
+unity/*.csproj
+unity/*.sln

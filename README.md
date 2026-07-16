@@ -1,7 +1,12 @@
 # 🍄 Mushmire
 
-*A 2D sandbox action-adventure RPG for iPhone Safari.*
+*A 2D sandbox action-adventure RPG.*
 *To: my baby Richard ♥*
+
+Two editions live in this repo:
+- **Web edition** (this folder) — instant play in any browser, including iPhone Safari.
+- **Unity edition** (`unity/`) — the native iOS port with URP 2D lighting and
+  synthesized sound. See [`unity/SETUP.md`](unity/SETUP.md) to get it running.
 
 Mushmire (the **Mush Empire**) is a Terraria-inspired, pixel-art sandbox with its own mystical
 personality — four hand-tuned biomes, day/night survival, crafting, building, creature charms,
